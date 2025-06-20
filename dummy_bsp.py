@@ -13,7 +13,7 @@ def run(username, password):
         "befores1": 118117116,
         "befores2": 110112114,
         "afters": 130131132,
-        "indicators": 201,
+        "indicators": 210,
         "user": username,
         "note": "This is a mock response for testing"
     }
