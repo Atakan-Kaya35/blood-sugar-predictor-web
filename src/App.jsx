@@ -1,15 +1,64 @@
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import PredictionChart from "./components/PredictionChart";
 
 function App() {
   const { state } = useLocation();
-  const result = state?.result;
+  const navigate = useNavigate();
+  const { username, password } = state || {};
 
-  if (!result) {
-    return <div className="text-center mt-20 text-xl">No prediction data.</div>;
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const fetchPrediction = async () => {
+    try {
+      const res = await fetch("https://7gh3eu50xc.execute-api.eu-central-1.amazonaws.com/dev/inference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data?.error || "Inference failed");
+      setResult(data);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!username || !password) {
+      navigate("/"); // redirect to login if credentials missing
+      return;
+    }
+
+    fetchPrediction(); // first fetch
+    const interval = setInterval(fetchPrediction, 5 * 60 * 1000); // refresh every 5 mins
+
+    return () => clearInterval(interval); // clean up
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-white">
+        <p className="text-lg text-purple-600 animate-pulse">Loading predictions...</p>
+      </div>
+    );
   }
 
-  // Extract values from 4 fields (same as before)
+  if (error) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-white">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   const extractTriplets = (number) =>
     number.toString().match(/.{3}/g).map((v) => [parseInt(v), 0.5]);
 

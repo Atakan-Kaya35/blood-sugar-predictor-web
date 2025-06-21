@@ -16,17 +16,8 @@ export default function LoginForm() {
     setMessage("");
 
     try {
-      const res = await fetch(`http://localhost:8080/run/${username}/${password}`, {
-        method: "POST",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data?.error || "Login failed");
-
-      // ✅ navigate to prediction page with result
-      navigate("/predict", { state: { result: data } });
-
+      // Don't fetch here — just navigate
+      navigate("/predict", { state: { username, password } });
     } catch (err) {
       setMessage(err.message);
     } finally {
