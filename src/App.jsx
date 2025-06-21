@@ -1,15 +1,15 @@
-import { useState } from "react";
-import LoginForm from "./components/LoginForm";
+import { useLocation } from "react-router-dom";
 import PredictionChart from "./components/PredictionChart";
 
 function App() {
-  const [result, setResult] = useState(null);
+  const { state } = useLocation();
+  const result = state?.result;
 
   if (!result) {
-    return <LoginForm onLoginSuccess={setResult} />;
+    return <div className="text-center mt-20 text-xl">No prediction data.</div>;
   }
 
-  // Convert integers like 120123126 into arrays like [120, 123, 126]
+  // Extract values from 4 fields (same as before)
   const extractTriplets = (number) =>
     number.toString().match(/.{3}/g).map((v) => [parseInt(v), 0.5]);
 

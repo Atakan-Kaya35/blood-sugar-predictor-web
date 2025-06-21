@@ -23,8 +23,8 @@ export default function PredictionChart({ values, indicators }) {
   // Labels for tick positions
   const tickvals = [...realX, ...predX];
   const ticktext = [
-    ...real.map((_, i) => `-${5*(num_befores - i)}`),
-    "Now", "+5min", "+10min"
+    ...real.map((_, i) => `-${5*(num_befores - i)}`).slice(1),
+    "Now", "+5min", "+10min", "+15min"
   ];  
     
   /* 
@@ -127,6 +127,22 @@ export default function PredictionChart({ values, indicators }) {
         },
         legend: { orientation: "h", y: -0.2 },
         responsive: false,
+        shapes: [
+          {
+            type: "line",
+            x0: realX[8],
+            x1: realX[8],
+            y0: 0,
+            y1: 1,
+            xref: "x",
+            yref: "paper",
+            line: {
+              color: "gray",
+              width: 1,
+              dash: "dot",
+            },
+          },
+        ],
       }}
       useResizeHandler
       style={{ width: "100%", height: "100%" }}

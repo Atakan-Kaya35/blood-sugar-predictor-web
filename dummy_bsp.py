@@ -13,6 +13,21 @@ def run(username, password):
         "befores1": 118117116,
         "befores2": 110112114,
         "afters": 130131132,
+        "indicators": 200,
+        "user": username,
+        "note": "This is a mock response for testing"
+    }
+    return jsonify(response), 200
+
+@app.route('/make/<string:username>/<string:password>', methods=['GET', 'POST'])
+def make(username, password):
+    response = {
+        "safeness": True,
+        "trend": 35,
+        "befores": 120123126,
+        "befores1": 118117116,
+        "befores2": 110112114,
+        "afters": 130131132,
         "indicators": 210,
         "user": username,
         "note": "This is a mock response for testing"
