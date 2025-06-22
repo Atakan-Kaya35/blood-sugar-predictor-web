@@ -59,8 +59,18 @@ function App() {
     );
   }
 
-  const extractTriplets = (number) =>
-    number.toString().match(/.{3}/g).map((v) => [parseInt(v), 0.5]);
+  const extractTriplets = (number) => {
+    const a = Math.floor(number / 1e6);
+    const b = Math.floor((number % 1e6) / 1e3);
+    const c = number % 1e3;
+    return [
+      [a, 0.5],
+      [b, 0.5],
+      [c, 0.5],
+    ];
+  };
+
+
 
   const values = [
     ...extractTriplets(result.befores2),
