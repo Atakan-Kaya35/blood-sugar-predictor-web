@@ -2,38 +2,86 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function StartTraining() {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState(state?.username || "");
+  const [password, setPassword] = useState(state?.password || "");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const navigate = useNavigate();
-  const { state } = useLocation();
-  const { username, password } = state || {};
-
-  const handleStart = async () => {
+  const startViaAppRunner = async () => {
     setLoading(true);
-    setMessage("Creating your deep learning model...");
+    setMessage("");
 
     try {
-      // Start training
-      const makeRes = await fetch(`http://localhost:8080/make/${username}/${password}`, {
+      // Step 1: Fetch Dexcom data using App Runner
+      const res1 = await fetch(
+        `https://ejfh8eyg6j.eu-central-1.awsapprunner.com/run/${username}/${password}`,
+        { method: "POST" }
+      );
+      const data1 = await res1.json();
+      if (!res1.ok) throw new Error(data1?.error || "Dexcom fetch failed");
+
+      // Optional: notify user step 1 succeeded
+      setMessage("Dexcom data fetched, now starting training...");
+
+      // Step 2: Trigger training Lambda
+      const res2 = await fetch("https://7gh3eu50xc.execute-api.eu-central-1.amazonaws.com/dev/training_job_trigger", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          num_of_models: 2,
+          epochs: 7,
+          batch_size: 24,
+          remaining_tries: 2,
+          acceptable_acc_score: 0.1,
+          seq_len: 12,
+          num_of_layers: 3
+        })
       });
 
-      if (!makeRes.ok) throw new Error("Model creation failed");
+      const data2 = await res2.json();
+      if (!res2.ok) throw new Error(data2?.error || "Training job failed");
 
-      setMessage("Model created. Fetching predictions...");
+      setMessage("Training successfully triggered!");
 
-      // Fetch predictions
-      const runRes = await fetch(`http://localhost:8080/run/${username}/${password}`, {
+      navigate("/predict", { state: { username, password } });
+
+    } catch (err) {
+      setMessage(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const startViaLambda = async () => {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const res = await fetch("https://7gh3eu50xc.execute-api.eu-central-1.amazonaws.com/dev/training_job_trigger", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username,
+          num_of_models: 2,
+          epochs: 7,
+          batch_size: 24,
+          remaining_tries: 2,
+          num_of_layers: 3,
+          acceptable_acc_score: 0.1,
+          seq_len: 12
+        })
       });
 
-      const result = await runRes.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Training failed.");
 
-      if (!runRes.ok) throw new Error(result?.error || "Inference failed");
+      setMessage("Training started from existing data!");
 
-      // Navigate to chart page with prediction result
-      navigate("/predict", { state: { result } });
+      navigate("/predict", { state: { username, password } });
 
     } catch (err) {
       setMessage(err.message);
@@ -43,19 +91,48 @@ export default function StartTraining() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-purple-50 text-center p-6">
-      <h1 className="text-3xl font-bold mb-6 text-purple-800">Welcome!</h1>
-      <p className="text-gray-700 mb-4 text-lg">Press the button below to begin training your personal prediction model.</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-200">
+      <div className="bg-white shadow-xl rounded-xl px-8 pt-6 pb-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-purple-700">
+          Start Model Training
+        </h2>
 
-      <button
-        onClick={handleStart}
-        disabled={loading}
-        className="bg-purple-600 text-white text-xl font-bold px-8 py-4 rounded-2xl shadow-lg hover:bg-purple-700 transition"
-      >
-        {loading ? "Working..." : "🚀 Start Training"}
-      </button>
+        <label className="block text-sm mb-1">Email</label>
+        <input
+          type="email"
+          className="w-full px-3 py-2 mb-4 border rounded focus:outline-none focus:ring"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
 
-      {message && <p className="mt-6 text-gray-700">{message}</p>}
+        <label className="block text-sm mb-1">Password</label>
+        <input
+          type="password"
+          className="w-full px-3 py-2 mb-4 border rounded focus:outline-none focus:ring"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button
+          onClick={startViaAppRunner}
+          disabled={loading}
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 mb-3"
+        >
+          {loading ? "Working..." : "Fetch Dexcom Data + Start Training"}
+        </button>
+
+        <button
+          onClick={startViaLambda}
+          disabled={loading}
+          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700"
+        >
+          {loading ? "Starting..." : "Start Training from Existing Data"}
+        </button>
+
+        {message && (
+          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
+        )}
+      </div>
     </div>
   );
 }
