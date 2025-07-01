@@ -67,10 +67,10 @@ export default function StartTraining() {
         body: JSON.stringify({
           username: username,
           num_of_models: 2,
-          epochs: 50,
+          epochs: 7,
           batch_size: 24,
           remaining_tries: 2,
-          num_of_layers: 10,
+          num_of_layers: 5,
           acceptable_acc_score: 0.1,
           seq_len: 12
         })

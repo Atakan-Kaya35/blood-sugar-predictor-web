@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation
+  //, useNavigate 
+  } from "react-router-dom";
 import PredictionChart from "./components/PredictionChart";
+import { handleInferenceNotification } from "./components/NotificationHandler"; // adjust path if needed
+
 
 function App() {
   const { state } = useLocation();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { username, password } = state || {};
 
   const [result, setResult] = useState(null);
@@ -20,9 +24,13 @@ function App() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data?.error || "Inference failed");
+
       setResult(data);
+
+      // 🔔 Trigger notifications here
+      handleInferenceNotification(data);
+
       setError("");
     } catch (err) {
       setError(err.message);
@@ -32,15 +40,30 @@ function App() {
   };
 
   useEffect(() => {
-    if (!username || !password) {
-      navigate("/"); // redirect to login if credentials missing
-      return;
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
     }
 
-    fetchPrediction(); // first fetch
-    const interval = setInterval(fetchPrediction, 5 * 60 * 1000); // refresh every 5 mins
+    const didRun = { current: false };
+    const intervalIdRef = { current: null };
 
-    return () => clearInterval(interval); // clean up
+    // Prevent StrictMode double-fetch
+    if (!didRun.current) {
+      fetchPrediction(); // fire immediately
+      didRun.current = true;
+    }
+
+    // Set up polling every 5 minutes
+    const intervalId = setInterval(() => {
+      fetchPrediction();
+    }, 5 * 60 * 1000); // 5 min
+
+    // Save reference for cleanup
+    intervalIdRef.current = intervalId;
+
+    return () => {
+      clearInterval(intervalIdRef.current);
+    };
   }, []);
 
   if (loading) {
