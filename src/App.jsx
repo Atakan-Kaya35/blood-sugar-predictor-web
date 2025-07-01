@@ -3,7 +3,7 @@ import { useLocation
   //, useNavigate 
   } from "react-router-dom";
 import PredictionChart from "./components/PredictionChart";
-import { handleInferenceNotification } from "./components/NotificationHandler"; // adjust path if needed
+//import { handleInferenceNotification } from "./components/NotificationHandler"; // adjust path if needed
 
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
       setResult(data);
 
       // 🔔 Trigger notifications here
-      handleInferenceNotification(data);
+      //handleInferenceNotification(data);
 
       setError("");
     } catch (err) {
@@ -40,9 +40,11 @@ function App() {
   };
 
   useEffect(() => {
+    /*
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
+    */
 
     const didRun = { current: false };
     const intervalIdRef = { current: null };

@@ -1,4 +1,5 @@
 // NotificationHandler.js
+/*
 export function handleInferenceNotification(data) {
     if (Notification.permission !== "granted") return;
   
@@ -43,4 +44,5 @@ export function handleInferenceNotification(data) {
       });
     }
   }
+    */
   
