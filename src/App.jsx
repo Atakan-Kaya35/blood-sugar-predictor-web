@@ -4,6 +4,8 @@ import { useLocation
   } from "react-router-dom";
 import PredictionChart from "./components/PredictionChart";
 //import { handleInferenceNotification } from "./components/NotificationHandler"; // adjust path if needed
+import { Preferences } from "@capacitor/preferences";
+import BackgroundFetchRegister from "./components/BackgroundFetchRegister";
 
 
 function App() {
@@ -21,6 +23,12 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
+      });
+
+      // for storage of info used by background in java native notification implementation
+      await Preferences.set({
+        key: "credentials",
+        value: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
@@ -68,6 +76,13 @@ function App() {
     };
   }, []);
 
+  const storeCredentials = async (username, password) => {
+    await Preferences.set({
+      key: "credentials",
+      value: JSON.stringify({ username, password }),
+    });
+  };
+  
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-white">
@@ -105,14 +120,18 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <h1 className="text-2xl font-bold text-center text-purple-700 mb-6">
-        BSP Prediction Chart
-      </h1>
-      <div className="max-w-4xl mx-auto h-[400px]">
-        <PredictionChart values={values} indicators={result.indicators} />
+    <>
+      <BackgroundFetchRegister />
+      
+      <div className="min-h-screen bg-gray-100 py-8 px-4">
+        <h1 className="text-2xl font-bold text-center text-purple-700 mb-6">
+          BSP Prediction Chart
+        </h1>
+        <div className="max-w-4xl mx-auto h-[400px]">
+          <PredictionChart values={values} indicators={result.indicators} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
