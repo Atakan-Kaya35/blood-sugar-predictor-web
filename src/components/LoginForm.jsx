@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from '../assets/logo.png';
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -38,9 +39,7 @@ export default function LoginForm() {
         onSubmit={handleLogin}
         className="bg-white shadow-xl rounded-xl px-8 pt-6 pb-8 w-full max-w-sm"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-purple-700">
-          BSP Login
-        </h2>
+        <img src={logo} alt="App Logo" className="w-36 h-36 mb-6 mx-auto" />
 
         <label className="block mb-2 text-sm text-gray-700">Email</label>
         <input

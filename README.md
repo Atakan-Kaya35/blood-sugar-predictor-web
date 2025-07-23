@@ -1,12 +1,62 @@
-# React + Vite
+# BSP Web App – Blood Sugar Prediction Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img src="./src/assets/logo.png" alt="BSP Logo" width="100"/>
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+  <b>Real-time blood sugar prediction and trend visualization for Type 1 diabetics.</b><br>
+  Built with modern technologies to provide fast, intuitive, and secure forecasting.
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 **Overview**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**BSP (Blood Sugar Predictor)** is a cutting-edge project designed to predict short-term blood glucose trends using machine learning.  
+The web app offers:
+- **Fast, on-demand inference** (optimized ML models).
+- **Clean, user-friendly UI** with a responsive design.
+- **Seamless deployment and modern stack** powered by Vite, React, and Tailwind CSS.
+
+> ⚠ **Disclaimer:** This project is **for research and educational purposes only** and does not provide medical advice.
+
+---
+
+## ✨ **Key Features**
+
+- **🔮 Predictive Insights:** Displays the latest 12 real-time glucose values with 3 predicted values ahead.
+- **📈 Interactive Graphs:** Color-coded trends with confidence bands.
+- **⚡ Optimized Inference:** Backend calls reduced to a minimum with a timer-based caching mechanism.
+- **🎨 Elegant Design:** Gradient background, centered login screen, and custom favicon/logo.
+- **📱 Mobile-First Layout:** Responsive UI that looks great on any screen size.
+- **🔐 Secure Backend (Black Box):** ML models and pipeline are private and patent-pending.
+
+---
+
+## 🖼 **Screenshots & Demo**
+
+### **Landing / Login**
+![Login Screen](./demos/login.png)
+
+### **Prediction Dashboard**
+![Prediction Graph](./demos/dashboard.png)
+
+---
+
+## 🛠 **Tech Stack**
+
+- **Frontend:**  
+  [![React](https://img.shields.io/badge/React-18.2.0-blue?logo=react)](https://reactjs.org/)  
+  [![Vite](https://img.shields.io/badge/Vite-6.3-orange?logo=vite)](https://vitejs.dev/)  
+  [![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4-blue?logo=tailwind-css)](https://tailwindcss.com/)
+
+- **Backend (Proprietary):**  
+  - AWS Lambda, SageMaker, and S3 (not open-sourced).
+  - Patent-pending ML inference pipeline.
+
+---
+
+## ⚡ **Getting Started**
+
+Clone the repository
