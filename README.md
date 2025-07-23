@@ -37,10 +37,10 @@ The web app offers:
 ## 🖼 **Screenshots & Demo**
 
 ### **Landing / Login**
-![Login Screen](./demos/login.png)
+![Login Screen](./demos/login_screen.png)
 
 ### **Prediction Dashboard**
-![Prediction Graph](./demos/dashboard.png)
+![Prediction Graph](./demos/pred_graph.png)
 
 ---
 
