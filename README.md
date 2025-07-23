@@ -63,7 +63,4 @@ The web app offers:
 
 ## ⚡ **Getting Started**
 
-Clone the repository:
-```bash
-git clone https://github.com/<your-username>/bsp-web.git
-cd bsp-web
+Clone the repository
