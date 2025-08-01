@@ -32,13 +32,13 @@ export default function StartTraining() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username,
-          num_of_models: 2,
+/*           num_of_models: 2,
           epochs: 7,
           batch_size: 24,
           remaining_tries: 2,
           acceptable_acc_score: 0.1,
           seq_len: 12,
-          num_of_layers: 3
+          num_of_layers: 3 */
         })
       });
 
